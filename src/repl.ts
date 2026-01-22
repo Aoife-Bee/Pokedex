@@ -1,7 +1,7 @@
 import { type State } from "./state.js";
 
 
-export function startREPL(state: State) {
+export async function startREPL(state: State): Promise<void> {
     state.rl.prompt();
 
     state.rl.on("line", async (input) => {
@@ -12,6 +12,7 @@ export function startREPL(state: State) {
         }
 
         const commandName = words[0];
+        const args = words.slice(1);    
 
         const cmd = state.commands[commandName];
         if (!cmd) {
@@ -23,7 +24,7 @@ export function startREPL(state: State) {
         }
 
         try {
-            await cmd.callback(state);
+            await cmd.callback(state, ...args);
         } catch (err) {
             console.log(err);
         }
